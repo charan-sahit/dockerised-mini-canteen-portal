@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  backend:    
+    
+    restart: unless-stopped     
+    
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - shared-network
+    
+
+  frontend:
+    
+    restart: unless-stopped
+    
+    build:
+      context: frontend
+      dockerfile: Dockerfile      
+    ports:
+      - "3000:3000"
+    networks:
+      - shared-network
+    depends_on:
+      - backend 
+    stdin_open: true
+    tty: true
+
+  nginx:
+    
+    restart: always 
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "6969:80"       
+    expose:
+      - "6969"
+    networks:
+      - shared-network
+    
+
+
+networks:
+  shared-network:
